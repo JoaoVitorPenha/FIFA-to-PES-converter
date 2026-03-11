@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>FIFA → PES13 Converter</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#111;
+color:#eee;
+padding:20px;
+}
+
+.container{
+display:flex;
+gap:40px;
+}
+
+table{
+border-collapse:collapse;
+}
+
+td{
+border:1px solid #444;
+padding:6px;
+}
+
+input{
+width:60px;
+background:#222;
+color:#fff;
+border:1px solid #555;
+}
+
+.output{
+color:#6cf;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>FIFA → PES13 Converter</h2>
+
+<div class="container">
+
+<div>
+
+<h3>FIFA</h3>
+
+<table>
+
+<tr><td>Crossing</td><td><input id="cross" value="70"></td></tr>
+<tr><td>Finishing</td><td><input id="fin" value="70"></td></tr>
+<tr><td>Heading</td><td><input id="head" value="70"></td></tr>
+<tr><td>Short Pass</td><td><input id="spass" value="70"></td></tr>
+<tr><td>Volleys</td><td><input id="vol" value="70"></td></tr>
+
+<tr><td>Dribbling</td><td><input id="drib" value="70"></td></tr>
+<tr><td>Curve</td><td><input id="cur" value="70"></td></tr>
+<tr><td>FK Accuracy</td><td><input id="fkc" value="70"></td></tr>
+<tr><td>Long Pass</td><td><input id="lpass" value="70"></td></tr>
+<tr><td>Ball Control</td><td><input id="bcont" value="70"></td></tr>
+
+<tr><td>Acceleration</td><td><input id="acc" value="70"></td></tr>
+<tr><td>Sprint Speed</td><td><input id="sprint" value="70"></td></tr>
+<tr><td>Agility</td><td><input id="agil" value="70"></td></tr>
+<tr><td>Reactions</td><td><input id="reac" value="70"></td></tr>
+<tr><td>Balance</td><td><input id="bal" value="70"></td></tr>
+
+<tr><td>Shot Power</td><td><input id="spow" value="70"></td></tr>
+<tr><td>Jumping</td><td><input id="jump" value="70"></td></tr>
+<tr><td>Stamina</td><td><input id="stam" value="70"></td></tr>
+<tr><td>Strength</td><td><input id="str" value="70"></td></tr>
+<tr><td>Long Shots</td><td><input id="lshot" value="70"></td></tr>
+
+<tr><td>Aggression</td><td><input id="agg" value="70"></td></tr>
+<tr><td>Interceptions</td><td><input id="int" value="70"></td></tr>
+<tr><td>Attack Pos</td><td><input id="attp" value="70"></td></tr>
+<tr><td>Vision</td><td><input id="vis" value="70"></td></tr>
+<tr><td>Penalties</td><td><input id="pen" value="70"></td></tr>
+<tr><td>Composure</td><td><input id="comp" value="70"></td></tr>
+
+<tr><td>Def Awareness</td><td><input id="defw" value="70"></td></tr>
+<tr><td>Stand Tackle</td><td><input id="stand" value="70"></td></tr>
+<tr><td>Slide Tackle</td><td><input id="slide" value="70"></td></tr>
+
+<tr><td>GK Diving</td><td><input id="gkd" value="50"></td></tr>
+<tr><td>GK Handling</td><td><input id="gkh" value="50"></td></tr>
+<tr><td>GK Kicking</td><td><input id="gkk" value="50"></td></tr>
+<tr><td>GK Position</td><td><input id="gkp" value="50"></td></tr>
+<tr><td>GK Reflex</td><td><input id="gkr" value="50"></td></tr>
+
+</table>
+
+</div>
+
+<div>
+
+<h3>PES13 (A)</h3>
+
+<table id="pesA"></table>
+
+</div>
+
+<div>
+
+<h3>PES13 (B ×0.95)</h3>
+
+<table id="pesB"></table>
+
+</div>
+
+</div>
+
+<script>
+
+const inputs=document.querySelectorAll("input")
+inputs.forEach(i=>i.addEventListener("input",calc))
+
+function val(id){return Number(document.getElementById(id).value)}
+
+function avg(...n){return n.reduce((a,b)=>a+b,0)/n.length}
+
+function scale(v){return Math.round(v*0.95)}
+
+function calc(){
+
+let cross=val("cross")
+let fin=val("fin")
+let head=val("head")
+let spass=val("spass")
+let vol=val("vol")
+
+let drib=val("drib")
+let cur=val("cur")
+let fkc=val("fkc")
+let lpass=val("lpass")
+let bcont=val("bcont")
+
+let acc=val("acc")
+let sprint=val("sprint")
+let agil=val("agil")
+let reac=val("reac")
+let bal=val("bal")
+
+let spow=val("spow")
+let jump=val("jump")
+let stam=val("stam")
+let str=val("str")
+let lshot=val("lshot")
+
+let agg=val("agg")
+let inter=val("int")
+let attp=val("attp")
+let vis=val("vis")
+let pen=val("pen")
+let comp=val("comp")
+
+let defw=val("defw")
+let stand=val("stand")
+let slide=val("slide")
+
+let gkd=val("gkd")
+let gkh=val("gkh")
+let gkk=val("gkk")
+let gkp=val("gkp")
+let gkr=val("gkr")
+
+let pes={
+
+Attack:attp,
+Defence:avg(defw,inter,stand,slide),
+Header:head,
+DribbleAcc:drib,
+
+ShortPassAcc:spass,
+ShortPassSpd:avg(spass,vis),
+
+LongPassAcc:avg(lpass,cross),
+LongPassSpd:lpass,
+
+ShotAcc:avg(fin,lshot),
+
+PlaceKick:avg(fkc,pen),
+
+Swerve:cur,
+
+BallControl:bcont,
+
+Responsiveness:reac,
+
+ExplosivePower:avg(acc,agil),
+
+DribbleSpeed:avg(drib,acc),
+
+TopSpeed:sprint,
+
+BodyBalance:avg(bal,str),
+
+Stamina:stam,
+
+KickingPower:spow,
+
+Jump:jump,
+
+Tenacity:avg(agg,stam),
+
+Teamwork:avg(vis,comp),
+
+Goalkeeping:avg(gkd,gkh,gkk,gkp,gkr)
+
+}
+
+draw("pesA",pes,false)
+draw("pesB",pes,true)
+
+}
+
+function draw(id,data,scaled){
+
+let html=""
+
+for(let k in data){
+
+let v=data[k]
+
+if(scaled)v=scale(v)
+
+html+=`<tr><td>${k}</td><td class="output">${Math.round(v)}</td></tr>`
+}
+
+document.getElementById(id).innerHTML=html
+
+}
+
+calc()
+
+</script>
+
+</body>
+</html>
